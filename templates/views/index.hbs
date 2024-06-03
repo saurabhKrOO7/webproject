@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weather app</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- NAVBAR -->
+    {{>navbar}}
+
+    <!-- MAIN-BODY -->
+    <div class="header">
+        <div class="left">
+            <p>Welcome to weather app</p>
+            <h1>Get the latest <span> Weather </span>info of your city</h1>
+            <button><a href="/weather">CheckWeather</a></button>
+        </div>
+        <div class="right">
+            <img src="./images/front.jpeg" alt="image">
+        </div>
+    </div>
+
+
+    <!-- FOOTER -->
+    {{>footer}}
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weather app</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+    <!-- NAVBAR -->
+    {{>navbar}}
+
+    <!-- MAIN-BODY -->
+    <div class="weather">
+        <div class="main_content">
+            <form class="temp_form">
+                <input type="text" id="cityName" placeholder="Enter city name" autocomplete="off">
+                <input type="submit" value="search" id="submit_button">
+            </form>
+        </div>
+
+        <div class="tempInformation">
+            <div class="topLayer">
+                <p id="day">Tuesday</p>
+                <p id="date_month">2 June</p>
+            </div>
+            <div class="mainLayer">
+                <p id="city_name">Get output here</p>
+                <div class="middleLayer hide_data">
+                    <p id="temp"><span>0</span> <sup>o</sup>C</p>
+                    <p id="temp_status"><i class="fa-solid fa-cloud-sun"></i></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FOOTER -->
+    {{>footer}}
+
+    <script src"../public/js/main.js">
+        const submit_button = document.getElementById('submit_button');
+        const cityName = document.getElementById('cityName');
+        const city_name = document.getElementById('city_name');
+
+        const temp = document.getElementById('temp');
+        const temp_status = document.getElementById('temp_status');
+
+        const hide_data = document.querySelector('.middleLayer');
+
+        const day = document.getElementById('day');
+        const date_month = document.getElementById('date_month');
+
+        const getCurrentDay = ()=>{
+            let weekday = new Array(7);
+            weekday[0] = "Sunday";
+            weekday[1] = "Monday";
+            weekday[2] = "Tuesday";
+            weekday[3] = "Wednesday";
+            weekday[4] = "Thursday";
+            weekday[5] = "Friday";
+            weekday[6] = "Saturday";
+
+            let currentTime = new Date();
+            let days = weekday[currentTime.getDay()];
+
+            day.innerText = days;
+        }
+
+        const getCurrentTime = ()=>{
+            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var now = new Date();
+
+            var months = months[now.getMonth() + 1];
+            var date = now.getDate();
+
+            date_month.innerText = `${date}, ${months}`;
+        }
+
+        getCurrentDay();
+        getCurrentTime();
+        
+        const getInfo = async (event) =>{
+            event.preventDefault(); 
+
+
+            cityVal = cityName.value;
+            console.log(cityVal);
+            if(cityVal === ""){
+                city_name.innerText = "Please enter city name";
+                hide_data.classList.add('hide_data');
+            }else{
+                try{
+                    let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityVal}&units=metric&appid=bbd29b119b8350d9f77911a13ff1ceba`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    const arrData = [data];
+
+                    city_name.innerText = `${arrData[0].name}, ${arrData[0].sys.country}`;
+                    temp.innerText = arrData[0].main.temp;
+                    const tempmood = arrData[0].weather[0].main;
+
+                    if(tempmood === "Clear"){
+                        temp_status.innerHTML = "<i class='fas fa-sun' style='color: #ecfc68'></i>";
+                    }else if(tempmood === "Clouds"){
+                        temp_status.innerHTML = "<i class='fas fa-cloud' style='color: skyblue'></i>";
+                    }else if(tempmood === "Rain"){
+                        temp_status.innerText = "<i class='fas fa-cloud-rain' style='color: #a4b0be'></i>";
+                    }else{
+                        temp_status.innerHTML = "<i class='fas fa-sun' style='color: #ecfc68'></i>";
+                    }
+                    hide_data.classList.remove('hide_data');
+                }catch{
+                    city_name.innerText = "Please enter city name properly";
+                    hide_data.classList.add('hide_data');
+                }
+            }
+        };
+
+        submit_button.addEventListener('click', getInfo);
+    </script>
+</body>
+</html>
